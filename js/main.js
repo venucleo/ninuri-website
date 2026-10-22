@@ -26,19 +26,24 @@ const onScroll = () => { if (header) header.classList.toggle('is-scrolled', wind
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
-// Start page: square tiles in all three rows when they still fit the window
-// height, otherwise the top and bottom rows stay landscape
+// Start page layout, picked by what fits the window height:
+// 4 x 5 squares when all five rows fit, else 6 x 3 squares when those fit,
+// else 6 columns with landscape top and bottom rows. Phones keep two columns.
 const mosaic = document.querySelector('.mosaic');
 if (mosaic) {
+  const fits = (cols, rows, width, gap, top) => {
+    const tile = (width - (cols - 1) * gap) / cols;
+    return top + rows * tile + (rows - 1) * gap <= window.innerHeight;
+  };
   const fit = () => {
     const cs = getComputedStyle(mosaic);
-    const cols = cs.gridTemplateColumns.split(' ').length;
-    if (cols < 6) { mosaic.classList.remove('is-square'); return; }
+    const phone = window.matchMedia('(max-width: 640px)').matches;
     const gap = parseFloat(cs.columnGap);
     const width = mosaic.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    const tile = (width - (cols - 1) * gap) / cols;
     const top = (header ? header.offsetHeight : 0) + parseFloat(cs.paddingTop);
-    mosaic.classList.toggle('is-square', top + 3 * tile + 2 * gap <= window.innerHeight);
+    const four = !phone && fits(4, 5, width, gap, top);
+    mosaic.classList.toggle('is-four', four);
+    mosaic.classList.toggle('is-square', !phone && !four && fits(6, 3, width, gap, top));
   };
   fit();
   window.addEventListener('resize', fit, { passive: true });
