@@ -182,6 +182,18 @@ strong, b { font-weight: 500; }
 .mosaic.is-square li { aspect-ratio: 1; }
 .mosaic .focus-top { object-position: 50% 4%; }
 
+/* Portrait windows: 4 x 5 square tiles, the two logo halves fill a 2 x 2
+   block in the middle (one column each, so the gap still runs through the logo) */
+@media (min-width: 641px) and (orientation: portrait) {
+  .mosaic { grid-template-columns: repeat(4, 1fr); }
+  .mosaic li { aspect-ratio: 1; }
+  .mosaic .logo-half { grid-row: 2 / span 2; aspect-ratio: auto; display: grid; }
+  .mosaic .logo-half { grid-column: 2; }
+  .mosaic .logo-half + .logo-half { grid-column: 3; }
+  .mosaic .logo-half img { object-fit: contain; }
+  .tile-label { font-size: clamp(1rem, 2.4vw, 1.9rem); }
+}
+
 /* Phones: two columns, the two logo halves side by side on top with the same gap */
 @media (max-width: 640px) {
   .mosaic { grid-template-columns: repeat(2, 1fr); }
