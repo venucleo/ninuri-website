@@ -17,6 +17,7 @@
   <link rel="preload" href="../assets/fonts/montserrat.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../css/style.css">
   <script>document.documentElement.classList.add('js')</script>
+  <script type="speculationrules">{"prefetch": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "*.webp"}}]}, "eagerness": "moderate"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -42,7 +43,7 @@
 
   <main id="main">
     <div class="wrap page-head">
-      <div class="cover"><img src="../assets/img/covers/kontakt.webp" width="1500" height="1000" fetchpriority="high" decoding="async" alt=""><h1>Kontakt</h1></div>
+      <div class="cover" style="background:#787878"><img src="../assets/img/covers/kontakt.webp" srcset="../assets/img/covers/kontakt-960.webp 960w, ../assets/img/covers/kontakt.webp 1500w" sizes="(max-width: 1280px) 100vw, 1280px" width="1500" height="1000" fetchpriority="high" decoding="async" alt=""><h1>Kontakt</h1></div>
     </div>
     <div class="wrap wrap-narrow contact-box">
       <a class="button" href="mailto:martina.stoesser@gmx.de"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3.75 6.75h16.5v10.5H3.75zM4 7l8 6 8-6"/></svg><span>martina.stoesser@gmx.de</span></a>

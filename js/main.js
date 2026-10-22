@@ -1,3 +1,7 @@
+// No right-click "save image" or dragging on photos (a deterrent, not a lock)
+document.addEventListener('contextmenu', (e) => { if (e.target.closest('img, .lb-stage')) e.preventDefault(); });
+document.addEventListener('dragstart', (e) => { if (e.target.closest('img')) e.preventDefault(); });
+
 // Mobile menu
 const header = document.querySelector('.site-header');
 const toggle = document.querySelector('.nav-toggle');
