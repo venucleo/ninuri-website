@@ -7,7 +7,7 @@ Plain HTML, CSS and a little JavaScript, with no build step. Each page lives in 
 - `schmuck/`, `keramik/`, `skulpturen/`: work galleries (Gold/Silber, Porzellan/Steinzeug)
 - `inspiration/`, `ueber-mich/`, `termine/`, `kontaktformular/`, `impressum/`: the other pages
 - `css/style.css`, `js/main.js`: styles, mobile menu, scroll fade-in, gallery lightbox
-- `assets/`: logo, favicon, self-hosted Montserrat font, images (`img/home/` mosaic tiles, `img/covers/` section banners, `img/works/` full size, `img/works/thumbs/` previews)
+- `assets/`: logo (`img/logo.svg`: the mark as three curves, n transparent, corners rounded), favicon, self-hosted Montserrat font, images (`img/home/` mosaic tiles, `img/covers/` section banners, `img/works/` full size, `img/works/thumbs/` previews)
 
 ## Run locally
 
