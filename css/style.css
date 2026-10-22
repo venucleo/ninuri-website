@@ -357,22 +357,23 @@ html:has(.subnav) { scroll-padding-top: calc(var(--header-h) + var(--bar-h) + 4.
 .prose a { overflow-wrap: anywhere; }
 
 /* Footer */
-.site-footer { background: var(--surface); }
+/* Footer in the backdrop grey of the product photos (median of 64 samples) */
+.site-footer { --footer-muted: #555; background: #ddddde; }
 .footer-inner {
   display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem 2rem; flex-wrap: wrap;
   padding-block: clamp(2rem, 4vw, 3rem);
 }
 .footer-inner a { text-decoration: none; }
-.footer-inner a:hover { color: var(--accent); }
+.footer-inner a:hover { color: var(--fg); text-decoration: underline; }
 .footer-brand { display: flex; align-items: flex-start; gap: 1rem; }
 .footer-brand img { width: 40px; margin-top: .3rem; }
-.footer-brand p { margin: 0; font-size: 14px; line-height: 1.7; color: var(--muted); }
+.footer-brand p { margin: 0; font-size: 14px; line-height: 1.7; color: var(--footer-muted); }
 .footer-brand strong { color: var(--fg); font-weight: 400; }
 .social { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; }
 .social svg { width: 24px; height: 24px; }
 .footer-links { display: flex; align-items: center; gap: 1rem; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
 .footer-links a:not(.social) { display: inline-block; padding: .75rem 0; }
-.copyright { flex-basis: 100%; margin: 0; padding-top: 1.25rem; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); letter-spacing: .02em; }
+.copyright { flex-basis: 100%; margin: 0; padding-top: 1.25rem; border-top: 1px solid rgba(0, 0, 0, .1); font-size: 12px; color: var(--footer-muted); letter-spacing: .02em; }
 
 /* Soft cross-fade between pages in browsers that support it */
 @view-transition { navigation: auto; }
