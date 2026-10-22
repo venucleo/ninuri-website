@@ -89,6 +89,17 @@ if (covers.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matc
   window.addEventListener('load', () => { measure(); request(); });
 }
 
+// Keep the page name in view: the slim bar shows once the big title has
+// scrolled under the menu
+const pageTitle = document.querySelector('.page-title');
+if (pageTitle && document.querySelector('.page-bar') && 'IntersectionObserver' in window) {
+  const stuck = new IntersectionObserver(([entry]) => {
+    const above = entry.boundingClientRect.top < (entry.rootBounds ? entry.rootBounds.top : 0);
+    document.documentElement.classList.toggle('title-stuck', !entry.isIntersecting && above);
+  }, { rootMargin: '-64px 0px 0px 0px' });
+  stuck.observe(pageTitle);
+}
+
 // Fade content in as it scrolls into view
 const revealables = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window) {
