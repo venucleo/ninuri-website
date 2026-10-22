@@ -148,7 +148,8 @@ if (dialog) {
     img.alt = thumb.alt;
     requestAnimationFrame(() => img.classList.add('is-in'));
     caption.textContent = link.dataset.caption || '';
-    count.textContent = `${index + 1} / ${links.length}`;
+    count.textContent = `Bild ${index + 1} von ${links.length}`;
+    [...dots.children].forEach((dot, n) => dot.setAttribute('aria-current', String(n === index)));
     if (!loaded.has(src)) {
       dialog.classList.add('is-loading');
       const wanted = index;
@@ -163,11 +164,24 @@ if (dialog) {
     // Preload the neighbours so browsing feels instant
     [at(index + 1), at(index - 1)].forEach((n) => preload(full(links[n])));
   };
+  // One dot per photo of the section; the current one is filled
+  const dots = dialog.querySelector('.lb-dots');
+  const buildDots = () => {
+    dots.replaceChildren(...links.map((link, n) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'lb-dot';
+      dot.setAttribute('aria-label', `Bild ${n + 1}: ${link.dataset.caption || ''}`);
+      dot.addEventListener('click', () => show(n));
+      return dot;
+    }));
+  };
   document.querySelectorAll('.gallery').forEach((gallery) => {
     const group = [...gallery.querySelectorAll('a')];
     group.forEach((a, i) => a.addEventListener('click', (e) => {
       e.preventDefault();
       links = group;
+      buildDots();
       show(i);
       dialog.showModal();
     }));
