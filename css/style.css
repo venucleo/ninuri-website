@@ -178,6 +178,10 @@ strong, b { font-weight: 500; }
 .mosaic a:hover { color: #fff; }
 .mosaic a:focus-visible { outline-offset: -4px; outline-color: #fff; }
 
+/* All rows square when the whole mosaic fits the window height (set in main.js) */
+.mosaic.is-square li { aspect-ratio: 1; }
+.mosaic .focus-top { object-position: 50% 4%; }
+
 /* Phones: two columns, the two logo halves side by side on top with the same gap */
 @media (max-width: 640px) {
   .mosaic { grid-template-columns: repeat(2, 1fr); }

@@ -26,6 +26,24 @@ const onScroll = () => { if (header) header.classList.toggle('is-scrolled', wind
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
+// Start page: square tiles in all three rows when they still fit the window
+// height, otherwise the top and bottom rows stay landscape
+const mosaic = document.querySelector('.mosaic');
+if (mosaic) {
+  const fit = () => {
+    const cs = getComputedStyle(mosaic);
+    const cols = cs.gridTemplateColumns.split(' ').length;
+    if (cols < 6) { mosaic.classList.remove('is-square'); return; }
+    const gap = parseFloat(cs.columnGap);
+    const width = mosaic.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const tile = (width - (cols - 1) * gap) / cols;
+    const top = (header ? header.offsetHeight : 0) + parseFloat(cs.paddingTop);
+    mosaic.classList.toggle('is-square', top + 3 * tile + 2 * gap <= window.innerHeight);
+  };
+  fit();
+  window.addEventListener('resize', fit, { passive: true });
+}
+
 // Fade content in as it scrolls into view
 const revealables = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window) {
