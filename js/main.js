@@ -1,5 +1,8 @@
 // No right-click "save image" or dragging on photos (a deterrent, not a lock)
-document.addEventListener('contextmenu', (e) => { if (e.target.closest('img, .lb-stage')) e.preventDefault(); });
+// (the gallery links count too: "Save link as" would fetch the full-size photo)
+document.addEventListener('contextmenu', (e) => {
+  if (e.target.closest('img, .lb-stage, .gallery a, .mosaic li, .cover, .photo-strip')) e.preventDefault();
+});
 document.addEventListener('dragstart', (e) => { if (e.target.closest('img')) e.preventDefault(); });
 
 // Mobile menu
@@ -90,15 +93,42 @@ if (dialog) {
   let links = [];
   let index = 0;
   const at = (i) => (i + links.length) % links.length;
+  // Phones get the 1080 px copy, larger screens the full 1920 px photo
+  const full = (link) => (window.innerWidth * (window.devicePixelRatio || 1) <= 1300
+    ? link.href.replace(/\.webp$/, '-1080.webp') : link.href);
+  const loaded = new Set();
+  const preload = (src) => new Promise((resolve) => {
+    if (loaded.has(src)) { resolve(); return; }
+    const pre = new Image();
+    pre.onload = () => { loaded.add(src); resolve(); };
+    pre.onerror = resolve;
+    pre.src = src;
+  });
   const show = (i) => {
     index = at(i);
     const link = links[index];
-    img.src = link.href;
-    img.alt = link.querySelector('img').alt;
+    const thumb = link.querySelector('img');
+    const src = full(link);
+    // Show the thumbnail that is already loaded at once, then swap in the sharp photo
+    img.classList.remove('is-in');
+    img.src = loaded.has(src) ? src : thumb.currentSrc || thumb.src;
+    img.alt = thumb.alt;
+    requestAnimationFrame(() => img.classList.add('is-in'));
     caption.textContent = link.dataset.caption || '';
     count.textContent = `${index + 1} / ${links.length}`;
+    if (!loaded.has(src)) {
+      dialog.classList.add('is-loading');
+      const wanted = index;
+      preload(src).then(() => {
+        if (wanted !== index) return;
+        img.src = src;
+        dialog.classList.remove('is-loading');
+      });
+    } else {
+      dialog.classList.remove('is-loading');
+    }
     // Preload the neighbours so browsing feels instant
-    [at(index + 1), at(index - 1)].forEach((n) => { new Image().src = links[n].href; });
+    [at(index + 1), at(index - 1)].forEach((n) => preload(full(links[n])));
   };
   document.querySelectorAll('.gallery').forEach((gallery) => {
     const group = [...gallery.querySelectorAll('a')];
