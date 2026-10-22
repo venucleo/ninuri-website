@@ -187,7 +187,7 @@ strong, b { font-weight: 500; }
    the gap still runs through the logo) */
 @media (min-width: 641px) {
   .mosaic.is-four { grid-template-columns: repeat(4, 1fr); }
-  .mosaic.is-four li { aspect-ratio: 1; }
+  .mosaic.is-four li { aspect-ratio: 1; order: var(--o4); }
   .mosaic.is-four .logo-half { grid-row: 2 / span 2; grid-column: 2; aspect-ratio: auto; }
   .mosaic.is-four .logo-half + .logo-half { grid-column: 3; }
   .mosaic.is-four .logo-half img { object-fit: contain; }
@@ -197,7 +197,7 @@ strong, b { font-weight: 500; }
 /* Phones: two columns, the two logo halves side by side on top with the same gap */
 @media (max-width: 640px) {
   .mosaic { grid-template-columns: repeat(2, 1fr); }
-  .mosaic li { aspect-ratio: 1; }
+  .mosaic li { aspect-ratio: 1; order: var(--o2); }
   .mosaic .logo-half { order: -1; }
   .tile-label { font-size: 1.2rem; }
 }
