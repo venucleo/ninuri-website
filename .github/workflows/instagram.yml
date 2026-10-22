@@ -1,0 +1,63 @@
+# Copies the latest Instagram posts into the Inspiration page once a day.
+# Setup: see "Instagram feed" in README.md.
+name: Instagram feed
+
+on:
+  schedule:
+    - cron: '17 4 * * *'  # daily, 04:17 UTC
+  workflow_dispatch:       # "Run workflow" button in the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-feed
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow (image resizing)
+        run: pip install pillow==11.3.0
+
+      - name: Fetch posts
+        id: feed
+        env:
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+        run: |
+          if [ -z "$INSTAGRAM_TOKEN" ]; then
+            echo "No INSTAGRAM_TOKEN secret yet, nothing to do"
+            exit 0
+          fi
+          python scripts/instagram.py
+
+      # Optional: keeps the token alive without manual renewal every 60 days.
+      # Needs a GH_ADMIN_TOKEN secret (fine-grained token with "Secrets: write").
+      - name: Store renewed token
+        if: steps.feed.outputs.new_token != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+          NEW_TOKEN: ${{ steps.feed.outputs.new_token }}
+        run: |
+          if [ -n "$GH_TOKEN" ]; then
+            printf '%s' "$NEW_TOKEN" | gh secret set INSTAGRAM_TOKEN --repo "$GITHUB_REPOSITORY"
+          fi
+
+      - name: Commit changes
+        run: |
+          git add assets/instagram inspiration/index.html
+          if git diff --cached --quiet; then
+            echo "Nothing new"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Instagram feed: latest posts"
+            git push
+          fi
