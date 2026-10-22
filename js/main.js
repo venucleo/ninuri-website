@@ -22,7 +22,7 @@ if (toggle && nav) {
 }
 
 // The header slims down and gets a hairline once the page scrolls
-const onScroll = () => { if (header) header.classList.toggle('is-scrolled', window.scrollY > 24); };
+const onScroll = () => { document.documentElement.classList.toggle('is-scrolled', window.scrollY > 24); };
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
@@ -60,6 +60,19 @@ if ('IntersectionObserver' in window) {
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
   revealables.forEach((el) => reveal.observe(el));
+
+  // Highlight the section in view in the section switcher
+  const subLinks = [...document.querySelectorAll('.subnav a')];
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      subLinks.forEach((a) => a.classList.toggle('is-active', a.hash === `#${entry.target.id}`));
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  subLinks.forEach((a) => {
+    const section = document.querySelector(a.hash);
+    if (section) spy.observe(section);
+  });
 } else {
   revealables.forEach((el) => el.classList.add('is-in'));
 }
