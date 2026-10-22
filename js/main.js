@@ -56,6 +56,39 @@ if (mosaic) {
   window.addEventListener('resize', fit, { passive: true });
 }
 
+// Cover bands: the photo drifts against the scroll and is centred on the band
+// when the band sits in the middle of the window (or at page load for a band
+// near the top, which never gets there)
+const covers = [...document.querySelectorAll('.cover img')];
+if (covers.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  let bands = [];
+  const measure = () => {
+    bands = covers.map((img) => {
+      const band = img.parentElement.getBoundingClientRect();
+      const centre = band.top + window.scrollY + band.height / 2;
+      // The photo may move 30% of the band height either way (see style.css),
+      // spread over the scroll distance in which the band is on screen
+      const limit = band.height * 0.3;
+      return { rest: Math.max(0, centre - window.innerHeight / 2), limit, speed: limit / ((window.innerHeight + band.height) / 2) };
+    });
+  };
+  let ticking = false;
+  const drift = () => {
+    ticking = false;
+    covers.forEach((img, i) => {
+      const { rest, limit, speed } = bands[i];
+      const shift = Math.max(-limit, Math.min(limit, (window.scrollY - rest) * speed));
+      img.style.transform = `translate3d(0, ${shift}px, 0)`;
+    });
+  };
+  const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(drift); } };
+  measure();
+  drift();
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', () => { measure(); request(); }, { passive: true });
+  window.addEventListener('load', () => { measure(); request(); });
+}
+
 // Fade content in as it scrolls into view
 const revealables = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window) {
