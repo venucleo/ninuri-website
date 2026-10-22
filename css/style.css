@@ -216,6 +216,14 @@ html:has(.subnav).is-scrolled .site-header { box-shadow: none; }
   background: var(--surface); color: #fff; text-align: center; isolation: isolate;
 }
 .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+/* As on the WordPress site, the photo stays put while the page scrolls and the
+   band moves over it like a window. clip-path keeps the fixed photo inside the
+   band; this also works on iOS, where background-attachment: fixed does not. */
+.cover { clip-path: inset(0); }
+.cover img { position: fixed; height: 100vh; }
+@media (prefers-reduced-motion: reduce) {
+  .cover img { position: absolute; height: 100%; }
+}
 .cover::after { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(0, 0, 0, .3); }
 .cover h2, .cover h1 {
   margin: 0; padding: 1rem; font-size: clamp(2rem, 4vw + 1rem, 3.4rem); font-weight: 300; line-height: 1.15;
